@@ -46,4 +46,14 @@ public class Score {
                 ", topPlayerScore=" + topPlayerScore +
                 '}';
     }
+
+    GameResult gameResult() {
+        if(topPlayerScore > bottomPlayerScore) {
+            return GameResult.TOP_PLAYER;
+        } else if (topPlayerScore < bottomPlayerScore) {
+            return GameResult.BOTTOM_PLAYER;
+        } else {
+            return GameResult.DRAW;
+        }
+    }
 }

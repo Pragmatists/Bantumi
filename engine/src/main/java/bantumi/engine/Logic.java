@@ -1,5 +1,7 @@
 package bantumi.engine;
 
+import static bantumi.engine.Turn.*;
+
 public class Logic {
     Board board;
 
@@ -14,10 +16,10 @@ public class Logic {
         return board;
     }
 
-    public void move(int selectedBucket) {
+    public void pickFrom(int selectedBucket) {
         assertBucketValidity(selectedBucket);
         int lastBucket = board.pickFromBucket(translate(selectedBucket));
-        int scoreBucket = Turn.BOTTOM_PLAYER.equals(turn) ? board.bottomScoreBucket() : board.topScoreBucket();
+        int scoreBucket = BOTTOM_PLAYER.equals(turn) ? board.bottomScoreBucket() : board.topScoreBucket();
         if (wasEmpty(lastBucket) && lastBucket != scoreBucket && isMineBucket(lastBucket)) {
             board.move(lastBucket, scoreBucket);
             steal(lastBucket, scoreBucket);
@@ -44,12 +46,14 @@ public class Logic {
     }
 
     private int translate(int selectedBucket) {
-        return Turn.BOTTOM_PLAYER.equals(turn) ? selectedBucket : selectedBucket + board.bucketsPerPlayer + 1;
+        return BOTTOM_PLAYER.equals(turn) ? selectedBucket : selectedBucket + board.bucketsPerPlayer + 1;
     }
 
     private void assertBucketValidity(int bucketNumber) {
-        if (bucketNumber >= board.bucketsPerPlayer) {
-            throw new IllegalMove();
+        if (bucketNumber >= board.bucketsPerPlayer ) {
+            throw new IllegalMove("Bucket does not exist.");
+        }else if(board.isBucketEmpty(translate(bucketNumber))){
+            throw new IllegalMove("Bucket is empty.");
         }
     }
 
@@ -98,5 +102,9 @@ public class Logic {
         int topPlayerScore = board.buckets(board.bottomScoreBucket() + 1, board.topScoreBucket() + 1).sum();
 
         return new Score(bottomPlayerScore, topPlayerScore);
+    }
+
+    public Turn turn() {
+        return turn;
     }
 }

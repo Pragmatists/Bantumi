@@ -42,12 +42,11 @@ public class Board {
     }
 
     public int pickFromBucket(int bucketNumber) {
-        assertBucketValidity(bucketNumber);
         int opponentScoreBucket = opponentScoreBucket(bucketNumber);
 
         int beans = pickBeansFromBucket(bucketNumber);
 
-        int lastBucket = (bucketNumber + beans) % bucketsAvailableForDroppingBeans();
+        int lastBucket = (bucketNumber + beans) % buckets.length;
         for (int i = nextBucketIndex(bucketNumber); beans > 0; i = nextBucketIndex(i)) {
             if (i == opponentScoreBucket) {
                 continue;
@@ -73,10 +72,6 @@ public class Board {
         return buckets.length - 1;
     }
 
-    private int bucketsAvailableForDroppingBeans() {
-        return topScoreBucket();
-    }
-
     private int opponentScoreBucket(int bucketNumber) {
         if (bucketNumber < bucketsPerPlayer) {
             return topScoreBucket();
@@ -85,11 +80,6 @@ public class Board {
         }
     }
 
-    private void assertBucketValidity(int bucketNumber) {
-        if (bucketNumber == bucketsPerPlayer || bucketNumber > 2 * bucketsPerPlayer) {
-            throw new IllegalMove();
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -158,5 +148,9 @@ public class Board {
 
     public IntStream buckets(int startInclusive, int endExclusive) {
         return IntStream.range(startInclusive, endExclusive).map(i -> buckets[i]);
+    }
+
+    public boolean isBucketEmpty(int bucketNumber) {
+        return buckets[bucketNumber] == 0;
     }
 }

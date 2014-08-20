@@ -21,7 +21,7 @@ public class LogicTest {
                 0, 0, 0
         ), BOTTOM_PLAYER);
 
-        logic.move(0);
+        logic.pickFrom(0);
 
         assertThat(logic).isEqualTo(new Logic(new Board(
                 0, 2, 0,
@@ -36,7 +36,7 @@ public class LogicTest {
                 3, 3, 0
         ), BOTTOM_PLAYER);
 
-        logic.move(0);
+        logic.pickFrom(0);
 
         assertThat(logic.getBoardState()).isEqualTo(new Board(
                 0, 4, 1,
@@ -52,7 +52,7 @@ public class LogicTest {
                 3, 3, 0
         ), BOTTOM_PLAYER);
 
-        Throwable exception = capture(() -> logic.move(bucket));
+        Throwable exception = capture(() -> logic.pickFrom(bucket));
 
         assertThat(exception).isInstanceOf(IllegalMove.class).hasMessage("Bucket does not exist.");
     }
@@ -64,7 +64,7 @@ public class LogicTest {
                 1, 3, 0
         ), Turn.TOP_PLAYER);
 
-        logic.move(0);
+        logic.pickFrom(0);
 
         assertThat(logic.getBoardState()).isEqualTo(new Board(
                 1, 3, 0,
@@ -79,7 +79,7 @@ public class LogicTest {
                 4, 4, 0
         ), BOTTOM_PLAYER);
 
-        logic.move(1);
+        logic.pickFrom(1);
 
         assertThat(logic.getBoardState()).isEqualTo(new Board(
                 5, 0, 1,
@@ -94,7 +94,7 @@ public class LogicTest {
                 4, 4, 0
         ), BOTTOM_PLAYER);
 
-        Throwable throwable = capture(() -> logic.move(4));
+        Throwable throwable = capture(() -> logic.pickFrom(4));
 
         assertThat(throwable).isInstanceOf(IllegalMove.class).hasMessage("Bucket does not exist.");
     }
@@ -106,7 +106,7 @@ public class LogicTest {
                 0, 0, 0
         ), BOTTOM_PLAYER);
 
-        logic.move(0);
+        logic.pickFrom(0);
 
         assertThat(logic.getBoardState()).isEqualTo(new Board(
                 0, 0, 1,
@@ -121,7 +121,7 @@ public class LogicTest {
                 1, 1, 0
         ), BOTTOM_PLAYER);
 
-        logic.move(0);
+        logic.pickFrom(0);
 
         assertThat(logic.getBoardState()).isEqualTo(new Board(
                 0, 0, 2,
@@ -136,7 +136,7 @@ public class LogicTest {
                 0, 0, 0
         ), BOTTOM_PLAYER);
 
-        logic.move(1);
+        logic.pickFrom(1);
 
         assertThat(logic.getBoardState()).isEqualTo(new Board(
                 1, 0, 1,
@@ -151,7 +151,7 @@ public class LogicTest {
                 1, 1, 0
         ), BOTTOM_PLAYER);
 
-        logic.move(0);
+        logic.pickFrom(0);
 
         assertThat(logic).isEqualTo(new Logic(new Board(
                 0, 1, 1,
@@ -198,6 +198,18 @@ public class LogicTest {
         ), TOP_PLAYER);
 
         assertThat(logic.getScore()).isEqualTo(new Score(6,2));
+    }
+
+    @Test
+    public void cannot_take_from_empty_bucket() {
+        logic = new Logic(new Board(
+                3, 3, 0,
+                0, 3, 0
+        ), TOP_PLAYER);
+
+        Throwable exception = capture(() -> logic.pickFrom(0));
+
+        assertThat(exception).isInstanceOf(IllegalMove.class).hasMessage("Bucket is empty.");
     }
 
     public static Throwable capture(Runnable runnable) {
